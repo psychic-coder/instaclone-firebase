@@ -1,13 +1,18 @@
 import { auth, firestore } from "../Firebase/firebase";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import useShowToast from "./useShowToast";
+import useAuthStore from "../store/authStore";
 
 const useSignUpWithEmailAndPassword = () => {
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
-    const showToast=useShowToast()
+  const showToast = useShowToast();
+
+  //in the below we're getting hold of the login function we created we created from the zustand
+  const loginUser = useAuthStore((state) => state.login);
+  // const logoutUser=useAuthStore(state=>state.logout)
 
   const signup = async (inputs) => {
     if (
@@ -16,8 +21,18 @@ const useSignUpWithEmailAndPassword = () => {
       !inputs.username ||
       !inputs.fullName
     ) {
-        //its a custom hook we created
-      showToast("Error","Please fill all the fields","error")
+      //its a custom hook we created
+      showToast("Error", "Please fill all the fields", "error");
+      return;
+    }
+
+    const usersRef = collection(firestore, "users");
+
+    const q = query(usersRef, where("username", "==",inputs.username  ));
+
+    const querySnapshot = await getDocs(q);
+    if(!querySnapshot.empty){
+      showToast("Error", "Username already exists ", "error");
       return;
     }
 
@@ -27,7 +42,7 @@ const useSignUpWithEmailAndPassword = () => {
         inputs.password
       );
       if (!newUser && error) {
-        showToast("Error",error.message,"error")
+        showToast("Error", error.message, "error");
         return;
       }
       if (newUser) {
@@ -46,9 +61,11 @@ const useSignUpWithEmailAndPassword = () => {
         await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
 
         localStorage.setItem("user-info", JSON.stringify(userDoc));
+
+        loginUser(userDoc);
       }
     } catch (error) {
-        showToast("Error",error.message,"error")
+      showToast("Error", error.message, "error");
     }
   };
 
