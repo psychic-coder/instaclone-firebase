@@ -11,9 +11,8 @@ const Homepage = () => {
           <FeedPosts/>
         </Box>
         <Box flex={3} mr={20} display={{base:"flex",lg:"block"}} maxW={"300px"}
-        
         >
-         <SuggestedUsers />
+          <SuggestedUsers/>
         </Box>
       </Flex>
     </Container>
