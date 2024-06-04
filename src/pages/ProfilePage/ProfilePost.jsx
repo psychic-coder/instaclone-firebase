@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Flex,
   GridItem,
@@ -20,9 +21,14 @@ import { MdDelete } from "react-icons/md";
 import React from "react";
 import Comment from "../../Components/Comment/Comment";
 import PostFooter from "../../Components/FeedPosts/PostFooter";
+import useUserProfileStore from "../../store/userProfileStore";
+import useAuthStore from "../../store/authStore";
 
-const ProfilePost = ({ img }) => {
+const ProfilePost = ({ post }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const userProfile=useUserProfileStore(state=>state.userProfile)
+  const authUser=useAuthStore(state=>state.user)
+  
 
   return (
     <>
@@ -53,20 +59,20 @@ const ProfilePost = ({ img }) => {
             <Flex>
               <AiFillHeart size={20} />
               <Text fontWeight={"bold"} ml={2}>
-                7
+                {post.likes.length}
               </Text>
             </Flex>
             <Flex>
               <FaComment size={20} />
               <Text fontWeight={"bold"} ml={2}>
-                7
+              {post.comments.length}
               </Text>
             </Flex>
           </Flex>
         </Flex>
 
         <Image
-          src={img}
+          src={post.imageURL}
           alt="profile post"
           w={"100%"}
           h={"100%"}
@@ -83,20 +89,24 @@ const ProfilePost = ({ img }) => {
         <ModalContent>
           <ModalCloseButton />
           <ModalBody bg={"black"} pb={5}>
-            <Flex
-              gap="4"
-              w={{ base: "90%", sm: "70%", md: "full" }}
-              mx={"auto"}
-            >
-              <Box
+          <Flex
+							gap='4'
+							w={{ base: "90%", sm: "70%", md: "full" }}
+							mx={"auto"}
+							maxH={"90vh"}
+							minH={"50vh"}
+						>
+              <Flex
                 borderRadius={4}
                 overflow={"hidden"}
                 border={"1px solid "}
                 borderColor={"whiteAlpha.300"}
                 flex={1.5}
+                justifyContent={"center"}
+                alignItems={"center"}
               >
-                <Image src={img} alt="profile post" />
-              </Box>
+                <Image src={post.imageURL} alt="profile post" />
+              </Flex>
               <Flex
                 flex={1}
                 flexDir={"column"}
@@ -106,22 +116,25 @@ const ProfilePost = ({ img }) => {
                 <Flex alignItems={"center"} justifyContent={"space-between"}>
                   <Flex alignItems={"center"} gap={4}>
                     <Avatar
-                      src="/profilepic.png"
+                      src={userProfile.profilePicURL}
                       size={"sm"}
                       name="as a programmer"
                     />
                     <Text fontWeight={"bold"} fontSize={12}>
-                      asaprogrammer_
+                      {userProfile.username}
                     </Text>
                   </Flex>
-
-                  <Box
+                  {authUser?.uid === userProfile.uid && (
+                  <Button
+                    size={"sm"}
+                    bg={"transparent"}
                     _hover={{ bg: "whiteAlpha.300", color: "red.600" }}
                     borderRadius={4}
                     p={1}
                   >
                     <MdDelete size={20} cursor={"pointer"} />
-                  </Box>
+                  </Button>
+                  )}
                 </Flex>
                 <Divider my={4} bg={"gray.500"}  />
                 <VStack w="full" alignItems={"start"} maxH={"350px"} overflowY={"auto"}  >
@@ -131,78 +144,15 @@ const ProfilePost = ({ img }) => {
                     profilePic="/profilepic.png"
                     text="Apple is a multinational technology "
                     />
-                    <Comment 
+                  
+                    <Comment
                     createdAt="2hrs ago"
                     username="rohit"
                     profilePic="/profilepic.png"
                     text="Apple is a multinational technology "
                     />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
-                    <Comment 
-                    createdAt="2hrs ago"
-                    username="rohit"
-                    profilePic="/profilepic.png"
-                    text="Apple is a multinational technology "
-                    />
+                  
+                  
                 </VStack>
                 <Divider my={4} bg={"gray.800"}/>
                 <PostFooter isProfilePage={true}/>
