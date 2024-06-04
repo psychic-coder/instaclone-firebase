@@ -13,8 +13,10 @@ import {
   NotificationsLogo,
   UnlikeLogo,
 } from "../../assets/constants";
+import usePostComment from "../../hooks/usePostComment";
+import useAuthStore from "../../store/authStore";
 
-const PostFooter = ({ username, isProfilePage }) => {
+const PostFooter = ({ post, username, isProfilePage }) => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(10);
   const handleLike = () => {
@@ -26,6 +28,14 @@ const PostFooter = ({ username, isProfilePage }) => {
       setLikes(likes + 1);
     }
   };
+  const { isCommenting, handlePostComment } = usePostComment();
+  const [comment, setComment] = useState("");
+  const handleSubmitComment = async () => {
+    await handlePostComment(post.id, comment);
+    setComment("");
+  };
+  const authUser=useAuthStore(state=>state.user)
+
   return (
     <Box mb={10} mt={"auto"}>
       <Flex alignItems={"center"} gap={4} w={"full"} pt={0} my={4}>
@@ -53,7 +63,8 @@ const PostFooter = ({ username, isProfilePage }) => {
         </>
       )}
 
-      <Flex
+      {authUser && (
+        <Flex
         alignItems={"center"}
         gap={2}
         justifyContent={"space-between"}
@@ -64,6 +75,8 @@ const PostFooter = ({ username, isProfilePage }) => {
             variant={"flushed"}
             placeholder={"Add a comment"}
             fontSize={14}
+            onChange={(e) => setComment(e.target.value)}
+            value={comment}
           />
           <InputRightElement>
             <Button
@@ -73,12 +86,15 @@ const PostFooter = ({ username, isProfilePage }) => {
               cursor={"pointer"}
               _hover={{ color: "white" }}
               bg={"transparent"}
+              onClick={handleSubmitComment}
+              isLoading={isCommenting}
             >
               Post
             </Button>
           </InputRightElement>
         </InputGroup>
       </Flex>
+      )}
     </Box>
   );
 };
