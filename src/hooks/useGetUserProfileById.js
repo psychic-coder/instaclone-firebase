@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import useShowToast from "./useShowToast";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../Firebase/firebase";
+//import { firestore } from "../firebase/firebase";
 
 const useGetUserProfileById = (userId) => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +27,7 @@ const useGetUserProfileById = (userId) => {
 		};
 		getUserProfile();
 	}, [showToast, setUserProfile, userId]);
-
+	//console.log(userProfile)
 	return { isLoading, userProfile, setUserProfile };
 };
 
